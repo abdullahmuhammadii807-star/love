@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Surprise Quiz</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #ffe6eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      transition: background 2s ease;
+    }
+
+    body.night-mode {
+      background: #020409;
+    }
+
+    .card {
+      background: #ffffff;
+      width: 360px;
+      min-height: 480px;
+      border-radius: 28px;
+      padding: 28px 24px;
+      box-shadow: 0 15px 35px rgba(255, 105, 135, 0.2);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      border: 4px solid #fff0f3;
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Glassmorphism Card */
+    .card.night-card {
+      background: rgba(6, 10, 20, 0.65);
+      border: 1px solid rgba(255, 192, 203, 0.2);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 117, 151, 0.15);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .big-heart {
+      font-size: 50px;
+      margin-bottom: 12px;
+    }
+
+    .pulsating {
+      animation: pulse 1.2s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.25); }
+    }
+
+    h2 {
+      color: #d63384;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .main-text {
+      color: #d63384;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .sub-text {
+      color: #a0a0a0;
+      font-size: 12px;
+      margin-bottom: 24px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background-color: #ffe6eb;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: #ff4d6d;
+      width: 20%;
+      transition: width 0.3s ease;
+    }
+
+    .tag {
+      color: #ff85a1;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .question-title {
+      color: #d63384;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+
+    .options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .option-btn, .primary-btn {
+      background: #ffffff;
+      border: 1.5px solid #ffccd5;
+      color: #d63384;
+      padding: 14px 16px;
+      border-radius: 20px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 10px rgba(255, 204, 213, 0.3);
+      width: 100%;
+    }
+
+    .primary-btn {
+      background-color: #ff4d6d;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      box-shadow: 0 6px 15px rgba(255, 77, 109, 0.4);
+    }
+
+    .primary-btn:hover {
+      background-color: #ff2a54;
+    }
+
+    .option-btn:hover {
+      background-color: #fff0f3;
+      border-color: #ff4d6d;
+      transform: translateY(-2px);
+    }
+
+    .final-buttons {
+      display: flex;
+      gap: 16px;
+      margin-top: 24px;
+      position: relative;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .secondary-btn {
+      background-color: #f8f9fa;
+      color: #6c757d;
+      border: 1px solid #dee2e6;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .heart-container {
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: bold;
+      color: #ff7597;
+      font-size: 8.5px;
+      line-height: 9.5px;
+      white-space: pre;
+      margin: 12px 0;
+      text-shadow: 0 0 10px rgba(255, 117, 151, 0.9), 0 0 20px rgba(255, 117, 151, 0.5);
+      animation: heartGlow 2s infinite alternate;
+    }
+
+    @keyframes heartGlow {
+      0% { transform: scale(1); filter: brightness(1); }
+      100% { transform: scale(1.02); filter: brightness(1.25); }
+    }
+
+    .love-text {
+      color: #ffb3c1;
+      font-size: 17px;
+      font-weight: 700;
+      margin-top: 5px;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 12px rgba(255, 179, 193, 0.7);
+      animation: pulse 1.5s infinite alternate;
+    }
+
+    #heartsContainer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .bg-heart {
+      position: absolute;
+      bottom: -50px;
+      animation: floatUp linear infinite;
+      opacity: 0.6;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(0.8); opacity: 0.7; }
+      100% { transform: translateY(-105vh) scale(1.2); opacity: 0; }
+    }
+
+    #skyCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      display: none;
+      z-index: 2;
+    }
+
+    /* REALISTIC CRESCENT MOON */
+    .crescent-wrapper {
+      position: fixed;
+      top: 50px;
+      right: 80px;
+      width: 130px;
+      height: 130px;
+      pointer-events: none;
+      z-index: 3;
+      display: none;
+      transform: rotate(-15deg);
+    }
+
+    .crescent-moon {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      box-shadow: -18px 10px 0 0 #fffef2;
+      filter: drop-shadow(0 0 15px rgba(255, 254, 242, 0.8)) 
+              drop-shadow(0 0 45px rgba(255, 182, 193, 0.4));
+    }
+
+    /* Soft Glow Aura */
+    .crescent-wrapper::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: -30px;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 254, 242, 0.18) 0%, rgba(255, 192, 203, 0.05) 50%, transparent 70%);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="heartsContainer"></div>
+  <canvas id="skyCanvas"></canvas>
+  
+  <div class="crescent-wrapper" id="crescentMoon">
+    <div class="crescent-moon"></div>
+  </div>
+
+  <audio id="ourSong" loop src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112199.mp3"></audio>
+
+  <div class="card" id="app"></div>
+
+  <script>
+    const questions = [
+      {
+        tag: "SAWAAL 1 / 5",
+        title: "Sabse pehle... tumhe pata hai tum kitni cute ho? 🥺💖",
+        subtitle: "Do you know how cute you are?",
+        options: ["Thoda sa 🥺", "Bahut zyada! 💖", "Tum batao na 🫣"]
+      },
+      {
+        tag: "SAWAAL 2 / 5",
+        title: "Agar main tumhe abhi ek gift doon, sabse pehle kya yaad aayega?",
+        subtitle: "If I gave you a gift right now, what comes to mind?",
+        options: ["Chocolate 🍫", "Ek pyara hug ☺️", "Bas tumhara pyar ❤️"]
+      },
+      {
+        tag: "SAWAAL 3 / 5",
+        title: "Jab tum mujhse baat karte ho, mujhe kaisa lagta hai pata hai?",
+        subtitle: "Do you know how I feel when we talk?",
+        options: ["Khushi 😊", "Dil ki dhadkan tez ❤️", "Dono ek saath 💞"]
+      },
+      {
+        tag: "SAWAAL 4 / 5",
+        title: "Ek chhota sa raaz batau tumhe? 🤫",
+        subtitle: "Want to know a little secret?",
+        options: ["Haan bolo na 👉", "Batao jaldi se 🥹", "Main sun rahi hoon 💗"]
+      },
+      {
+        tag: "SAWAAL 5 / 5",
+        title: "Woh raaz yeh hai... tumhare bina din adhoora sa lagta hai. 🥺💖",
+        subtitle: "The secret is... my day feels incomplete without you.",
+        options: ["Awww 🥺", "Mujhe bhi kuch kehna hai 🫣", "Aage badho na 💖"]
+      }
+    ];
+
+    let currentScreen = 'welcome';
+    let currentQuestion = 0;
+    let heartInterval = null;
+
+    const heartPattern = 
+`  I LOVE YOU       I LOVE YOU  
+I LOVE YOU I LO   I LOVE YOU I LO
+I LOVE YOU I LOVE YOU I LOVE YOU
+I LOVE YOU I LOVE YOU I LOVE YOU
+ I LOVE YOU I LOVE YOU I LOVE Y 
+  I LOVE YOU I LOVE YOU I LOVE  
+   I LOVE YOU I LOVE YOU I LO   
+    I LOVE YOU I LOVE YOU I     
+      I LOVE YOU I LOVE Y       
+        I LOVE YOU I LO         
+          I LOVE YOU            
+            I LOVE              
+              I                 `;
+
+    function renderScreen() {
+      const container = document.getElementById('app');
+
+      if (currentScreen === 'welcome') {
+        container.innerHTML = `
+          <div class="big-heart">💖</div>
+          <h2>Hey Jaan 👋</h2>
+          <p class="main-text">Ek chhota sa surprise hai tumhare liye... par pehle mujhe kuch sawaal poochne hai. Ready ho?</p>
+          <p class="sub-text">(I have a small surprise for you... but first, a few questions.)</p>
+          <button class="primary-btn" onclick="startQuiz()">Chalo shuru karte hai 💟</button>
+        `;
+      } else if (currentScreen === 'quiz') {
+        const q = questions[currentQuestion];
+        const progress = ((currentQuestion + 1) / questions.length) * 100;
+
+        container.innerHTML = `
+          <div class="progress-bar"><div class="progress-fill" style="width: ${progress}%"></div></div>
+          <span class="tag">${q.tag}</span>
+          <h3 class="question-title">${q.title}</h3>
+          <p class="sub-text">${q.subtitle}</p>
+          <div class="options-container">
+            ${q.options.map(opt => `<button class="option-btn" onclick="nextQuestion()">${opt}</button>`).join('')}
+          </div>
+        `;
+      } else if (currentScreen === 'final') {
+        container.innerHTML = `
+          <div class="big-heart">💖</div>
+          <h3 class="question-title">Bas ek aakhri sawaal... Kya tum meri zindagi ka sabse khoobsurat hissa banoge/banogi? ❤️🥺</h3>
+          <div class="final-buttons">
+            <button class="primary-btn" style="width: auto; padding: 12px 28px;" onclick="showSuccess()">Yes 💖</button>
+            <button class="secondary-btn" id="noBtn" onmouseover="moveNoButton()" onclick="moveNoButton()">No</button>
+          </div>
+        `;
+      } else if (currentScreen === 'success') {
+        container.innerHTML = `
+          <div class="big-heart pulsating">💖</div>
+          <h2>You said YES! 🥺❤️</h2>
+          <p class="main-text">Thank you for choosing me. Aaj se har khushi tumhare saath. I love you forever! 💍✨</p>
+          <button class="primary-btn" style="margin-top:20px; background-color:#ff85a1;" onclick="playSongAndShowNightSky()">Our Song 🎵</button>
+        `;
+      } else if (currentScreen === 'music_screen') {
+        container.className = "card night-card";
+        container.innerHTML = `
+          <div class="love-text">✨ FOREVER & ALWAYS ✨</div>
+          <pre class="heart-container">${heartPattern}</pre>
+          <p class="main-text" style="color: #ffb3c1;">I LOVE YOU SO MUCH! 💖✨</p>
+          <p class="sub-text" style="color: #c0c5d5;">🎶 Under the moonlight... 🎶</p>
+        `;
+      }
+    }
+
+    function playSongAndShowNightSky() {
+      const audio = document.getElementById('ourSong');
+      audio.play();
+
+      clearInterval(heartInterval);
+      document.getElementById('heartsContainer').innerHTML = '';
+
+      document.body.classList.add('night-mode');
+      const canvas = document.getElementById('skyCanvas');
+      canvas.style.display = 'block';
+      document.getElementById('crescentMoon').style.display = 'block';
+
+      initRealisticSky(canvas);
+
+      currentScreen = 'music_screen';
+      renderScreen();
+    }
+
+    function initRealisticSky(canvas) {
+      const ctx = canvas.getContext('2d');
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        generateStars();
+      });
+
+      let stars = [];
+      function generateStars() {
+        stars = [];
+        const count = Math.floor((width * height) / 3000);
+        const colors = ['#ffffff', '#ffffff', '#e2edff', '#ffeada', '#ffd8d8'];
+
+        for (let i = 0; i < count; i++) {
+          stars.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            size: Math.random() * 1.2 + 0.4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            alpha: Math.random(),
+            twinkleSpeed: Math.random() * 0.02 + 0.005,
+            isBig: Math.random() < 0.03
+          });
+        }
+      }
+
+      generateStars();
+
+      let meteors = [];
+      function createMeteor() {
+        const angle = (35 * Math.PI) / 180;
+        const speed = Math.random() * 12 + 10;
+        meteors.push({
+          x: Math.random() * width * 0.8,
+          y: Math.random() * height * 0.3,
+          dx: Math.cos(angle) * speed,
+          dy: Math.sin(angle) * speed,
+          length: Math.random() * 140 + 80,
+          life: 1,
+          decay: Math.random() * 0.02 + 0.015,
+          width: Math.random() * 1.5 + 1
+        });
+      }
+
+      setInterval(createMeteor, 2200);
+
+      function animate() {
+        ctx.fillStyle = '#020409';
+        ctx.fillRect(0, 0, width, height);
+
+        const bgGlow = ctx.createRadialGradient(width * 0.8, height * 0.15, 10, width * 0.8, height * 0.15, 600);
+        bgGlow.addColorStop(0, 'rgba(255,200,220,0.06)');
+        bgGlow.addColorStop(0.5, 'rgba(100,120,180,0.03)');
+        bgGlow.addColorStop(1, 'transparent');
+        ctx.fillStyle = bgGlow;
+        ctx.fillRect(0, 0, width, height);
+
+        stars.forEach(s => {
+          s.alpha += s.twinkleSpeed;
+          if (s.alpha > 1 || s.alpha < 0.15) s.twinkleSpeed = -s.twinkleSpeed;
+
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, Math.min(1, s.alpha));
+          ctx.fillStyle = s.color;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+          ctx.fill();
+
+          if (s.isBig) {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(s.x - s.size * 4, s.y);
+            ctx.lineTo(s.x + s.size * 4, s.y);
+            ctx.moveTo(s.x, s.y - s.size * 4);
+            ctx.lineTo(s.x, s.y + s.size * 4);
+            ctx.stroke();
+          }
+          ctx.restore();
+        });
+
+        meteors.forEach((m, idx) => {
+          m.x += m.dx;
+          m.y += m.dy;
+          m.life -= m.decay;
+
+          if (m.life <= 0) {
+            meteors.splice(idx, 1);
+            return;
+          }
+
+          const tailX = m.x - (m.dx / Math.hypot(m.dx, m.dy)) * m.length;
+          const tailY = m.y - (m.dy / Math.hypot(m.dx, m.dy)) * m.length;
+
+          const mGrad = ctx.createLinearGradient(m.x, m.y, tailX, tailY);
+          mGrad.addColorStop(0, `rgba(255, 255, 255, ${m.life})`);
+          mGrad.addColorStop(0.3, `rgba(255, 182, 193, ${m.life * 0.7})`);
+          mGrad.addColorStop(1, 'transparent');
+
+          ctx.strokeStyle = mGrad;
+          ctx.lineWidth = m.width;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(m.x, m.y);
+          ctx.lineTo(tailX, tailY);
+          ctx.stroke();
+
+          ctx.fillStyle = `rgba(255, 255, 255, ${m.life})`;
+          ctx.beginPath();
+          ctx.arc(m.x, m.y, m.width * 1.5, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    }
+
+    function startQuiz() {
+      currentScreen = 'quiz';
+      renderScreen();
+    }
+
+    function nextQuestion() {
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        renderScreen();
+      } else {
+        currentScreen = 'final';
+        renderScreen();
+      }
+    }
+
+    function moveNoButton() {
+      const btn = document.getElementById('noBtn');
+      if (btn) {
+        const x = Math.floor(Math.random() * 160) - 80;
+        const y = Math.floor(Math.random() * 160) - 80;
+        btn.style.transform = `translate(${x}px, ${y}px)`;
+      }
+    }
+
+    function showSuccess() {
+      currentScreen = 'success';
+      renderScreen();
+    }
+
+    heartInterval = setInterval(() => {
+      if (currentScreen !== 'music_screen') {
+        const heart = document.createElement('div');
+        heart.className = 'bg-heart';
+        heart.innerText = '❤️';
+        heart.style.left = Math.random() * 90 + 5 + '%';
+        heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+        heart.style.fontSize = Math.random() * 15 + 10 + 'px';
+        document.getElementById('heartsContainer').appendChild(heart);
+        setTimeout(() => heart.remove(), 6000);
+      }
+    }, 400);
+
+    renderScreen();
+  </script>
+</body>
+</html>
